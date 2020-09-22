@@ -1,0 +1,17 @@
+$skyblue: #5bc0de;
+$midblue: #1e90ff;
+$lightgrey: #fafafa;
+$midgrey: #dcdcdc;
+$darkgrey: #363636;
+$validred: #a94442;
+
+@mixin flexColCen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin spaceBtwn {
+  display: flex;
+  justify-content: space-between;
+}

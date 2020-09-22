@@ -12,6 +12,10 @@ export default {
   },
 
   mutations: {
+    login(state, access_token) {
+      localStorage.setItem('access_token', access_token);
+      state.login = true;
+    },
     logout(state) {
       localStorage.removeItem('access_token');
       state.login = false;
@@ -19,6 +23,9 @@ export default {
   },
 
   actions: {
+    login({ commit }, access_token) {
+      commit('login', access_token);
+    },
     logout({ commit }) {
       commit('logout');
     }
