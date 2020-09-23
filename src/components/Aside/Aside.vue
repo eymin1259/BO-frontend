@@ -12,17 +12,21 @@
       >
         <a
           :href="main.param === 'home' && '/'"
-          :class="['main-link', main.param === mainMenu && 'active']"
+          :class="[
+            'main-link',
+            main.param === mainMenu && 'active',
+            main.param === checkedMenu && 'checked'
+          ]"
         >
           <div>
             <i :class="[main.param]" />
             <span class="name">{{ main.name }}</span>
           </div>
           <div>
-            <i class="arrow close" />
+            <i class="arrow" />
           </div>
         </a>
-        <ul :class="['sub-menus', main.param !== mainMenu && 'hidden']">
+        <ul :class="['sub-menus', main.param !== checkedMenu && 'hidden']">
           <li class="sub-menu" :key="sub.name" v-for="sub of main.sub">
             <a
               :class="['sub-link', sub.param === subMenu && 'active']"
@@ -44,12 +48,17 @@ export default {
     return {
       menus,
       mainMenu: this.$route.path.split('/')[1],
-      subMenu: this.$route.path.split('/')[2]
+      subMenu: this.$route.path.split('/')[2],
+      checkedMenu: this.$route.path.split('/')[1],
+      fold: false
     };
   },
   methods: {
     changeCurrMain(main) {
-      this.mainMenu = main;
+      this.checkedMenu = main;
+    },
+    toggleFold() {
+      this.fold = !this.fold;
     }
   }
 };
@@ -98,6 +107,11 @@ aside {
 
     .main-menu {
       border-bottom: 1px solid #414247;
+      transition: max-height 1.2s;
+
+      &:last-child {
+        border-bottom: 0;
+      }
 
       .main-link {
         display: flex;
@@ -110,6 +124,7 @@ aside {
         text-decoration: none;
         cursor: pointer;
         color: #eee;
+        transition: max-height 1.2s;
 
         &:hover {
           color: #f1f1f1;
@@ -120,6 +135,16 @@ aside {
           border-right: 4px solid #d12610;
           color: #f1f1f1;
           background: #27272b;
+        }
+
+        &.checked {
+          background: #27272b;
+
+          .arrow {
+            &:before {
+              content: '\f107';
+            }
+          }
         }
 
         i {
@@ -172,7 +197,10 @@ aside {
             content: '\f107';
           }
         }
-        .close {
+
+        .arrow {
+          transition: all 1.2s ease-in-out;
+
           &:before {
             font-family: 'FontAwesome';
             content: '\f104';
@@ -183,16 +211,18 @@ aside {
       .sub-menus {
         margin: 8px 0px;
         max-height: 100%;
-        transition: max-height 1s ease 0s;
+        transition: max-height 0.6s;
 
         &.hidden {
           overflow: hidden;
           margin: 0px;
           max-height: 0px;
+          transition: max-height 0.5s ease;
         }
 
         .sub-menu {
           margin-top: 1px;
+          transition: max-height 0.6s;
 
           .sub-link {
             display: flex;
@@ -206,6 +236,7 @@ aside {
             text-decoration: none;
             cursor: pointer;
             color: #eee;
+            transition: max-height 0.6s;
 
             &:hover {
               color: #fff;
