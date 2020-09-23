@@ -1,24 +1,26 @@
 export default {
   namespaced: true,
   state: {
-    price: 1000
+    access_token: localStorage.getItem('access_token'),
+    login: localStorage.getItem('access_token') ? true : false
   },
 
   getters: {
-    getPrice(state) {
-      return state.price;
+    isLogin(state) {
+      return state.login;
     }
   },
 
   mutations: {
-    updatePrice(state, newPrice) {
-      state.price = newPrice;
+    logout(state) {
+      localStorage.removeItem('access_token');
+      state.login = false;
     }
   },
 
   actions: {
-    updatePrice({ commit }, payload) {
-      commit('updatePrice', payload);
+    logout({ commit }) {
+      commit('logout');
     }
   }
 };

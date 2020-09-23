@@ -44,7 +44,8 @@ module.exports = {
                   name: 'img/[name].[hash:8].[ext]',
                   esModule: false
                 }
-              }
+              },
+              esModule: false
             }
           }
         ]
