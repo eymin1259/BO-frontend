@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../pages/Home';
+import ProductRegist from '../pages/ProductRegist';
+import MemberLookup from '../pages/MemberLookup';
+import SellerModify from '../pages/SellerModify';
+import Lookup from '../pages/Lookup';
 
 Vue.use(VueRouter);
 
@@ -9,17 +12,27 @@ export const router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home
+      redirect: '/account/member'
     },
     {
-      path: '/about',
-      name: 'About',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ '../pages/About.vue')
+      path: '/product/regist',
+      name: 'ProductRegist',
+      component: ProductRegist
+    },
+    {
+      path: '/account/seller/modify',
+      name: 'SellerModify',
+      component: SellerModify
+    },
+    {
+      path: '/account/:type',
+      name: 'MemberLookup',
+      component: MemberLookup
+    },
+    {
+      path: '/:lookup',
+      name: 'Lookup',
+      component: Lookup
     }
   ]
 });
