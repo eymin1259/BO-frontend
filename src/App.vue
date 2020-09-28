@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <div v-if="this.$route.path.indexOf('admin') === -1">
     <Header />
     <div class="container">
       <Aside />
       <main>
-        <router-view />
+        <router-view :key="$route.fullPath" />
       </main>
     </div>
   </div>
+  <router-view :key="$route.fullPath" v-else />
 </template>
 
 <script>

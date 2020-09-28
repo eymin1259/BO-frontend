@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
 import ProductRegist from '../pages/ProductRegist';
 import MemberLookup from '../pages/MemberLookup';
 import SellerModify from '../pages/SellerModify';
 import Lookup from '../pages/Lookup';
+import Login from '../pages/Login';
+import Join from '../pages/Join.vue';
+import Signup from '../pages/Signup.vue';
 
 Vue.use(VueRouter);
 
@@ -28,6 +32,21 @@ export const router = new VueRouter({
       path: '/account/:type',
       name: 'MemberLookup',
       component: MemberLookup
+    },
+    {
+      path: '/admin/login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/admin/agreement',
+      name: 'Join',
+      component: Join
+    },
+    {
+      path: '/admin/signup',
+      name: 'Signup',
+      component: Signup
     },
     {
       path: '/:lookup',
