@@ -1,8 +1,11 @@
 $skyblue: #5bc0de;
-$midblue: #1e90ff;
-$lightgrey: #fafafa;
+$midblue: #1e90ff; // 메인 버튼, 캡션 color
+$midbluehover: #298ae6; // 메인 버튼 호버 시 color
+$lightgrey: #fafafa; // 전체페이지 배경색 color
+$softgrey: #e6e6e6; // 테이블 내부 헤더, 인풋 내부 배경색 color
 $midgrey: #dcdcdc;
-$darkgrey: #363636;
+$coolgrey: #34373a; // 테이블 내부의 테이블 제목 color
+$darkgrey: #363636; // 전체 보더, 텍스트, 블랙 버튼 호버 color
 $validred: #a94442;
 
 @mixin flexColCen {
@@ -14,4 +17,20 @@ $validred: #a94442;
 @mixin spaceBtwn {
   display: flex;
   justify-content: space-between;
+}
+
+@mixin blue-btn {
+  background-color: $midblue;
+
+  &:hover {
+    background-color: $midbluehover;
+  }
+}
+
+@mixin black-btn {
+  background-color: black;
+
+  &:hover {
+    background-color: $darkgrey;
+  }
 }

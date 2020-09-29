@@ -204,14 +204,14 @@ export default {
   data() {
     return {
       infoInput: {
-        seller_loginID: 'DODODO',
-        password: '1234qwer',
-        password2: '1234qwer',
-        phone_number: '0101001',
-        korean_name: '조나단네옷가게',
-        eng_name: 'JONATHAN',
-        center_number: '024090909',
-        site_url: 'http://brandi.com'
+        seller_loginID: '',
+        password: '',
+        password2: '',
+        phone_number: '',
+        korean_name: '',
+        eng_name: '',
+        center_number: '',
+        site_url: ''
       },
       submitValue: {},
       radioList: [
@@ -267,7 +267,6 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err.response);
           if (err.response.data['MESSAGE'] === 'DUPLICATED ID') {
             this.serverID = this.infoInput.seller_loginID;
           }
