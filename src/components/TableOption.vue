@@ -11,21 +11,13 @@
       <td>
         <div class="option-container">
           <div class="option-whole" @click="openColorOption">
-            <div class="drop-list" v-show="isColorOpen">
-              <i class="fas fa-times"></i>
-              <input v-model="testInput" type="text" />
-              <ul>
-                <li v-for="(color, idx) in option.color_option" :key="idx">
-                  {{ color }}
-                </li>
-              </ul>
-            </div>
             <div class="flex-box-space">
               <p>색상을 선택해주세요.</p>
               <div class="arrow-container">
                 <i class="fas fa-chevron-down"></i>
               </div>
             </div>
+            <drop-list></drop-list>
           </div>
         </div>
       </td>
@@ -80,16 +72,18 @@
 ></template>
 
 <script>
-import { option } from '@/assets/mock/productRegist.js';
+import DropList from '../components/DropList.vue';
 
 export default {
   name: 'TableOption',
   props: ['isColorOpen'],
+  components: {
+    'drop-list': DropList
+  },
   data() {
     return {
       selectedColor: '',
       selectedSize: '',
-      option: option,
       closeClicked: false,
       isSizeOpen: false
     };
