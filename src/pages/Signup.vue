@@ -1,6 +1,7 @@
 /* eslint-disable vue/no-unused-components */
 <template>
   <div class="join-info">
+    <Spinner v-show="true" />
     <validation-observer v-slot="{ invalid }">
       <form class="join-info-container" @submit.prevent="onSubmit">
         <h1>셀러회원 가입</h1>
@@ -98,7 +99,7 @@
               :label="idx + 1"
               :buttonName="buttonName"
               :key="idx"
-              @change="changeValue"
+              @change="radioUpdate"
             />
           </div>
           <div class="input-container">
@@ -186,6 +187,7 @@
 import ButtonBlue from '../components/ButtonBlue';
 import ButtonRed from '../components/ButtonRed';
 import RadioBtn from '../components/RadioBtn';
+import Spinner from '../components/Spinner';
 import axios from 'axios';
 import { config } from '../../config.js';
 import '../../vee-validate.js';
@@ -199,7 +201,8 @@ export default {
     redbutton: ButtonRed,
     'radio-btn': RadioBtn,
     'validation-provider': ValidationProvider,
-    'validation-observer': ValidationObserver
+    'validation-observer': ValidationObserver,
+    Spinner
   },
   data() {
     return {
@@ -224,12 +227,33 @@ export default {
         '뷰티'
       ],
       selectedRadio: 1,
-      serverID: ''
+      serverID: '',
+      isLoading: false
     };
+  },
+  created() {
+    axios.interceptors.request.use(
+      function(config) {
+        this.isLoading = !this.isLoading;
+        return config;
+      },
+      function(error) {
+        return Promise.reject(error);
+      }
+    );
+    axios.interceptors.response.use(
+      function(response) {
+        this.isLoading = false;
+        return response;
+      },
+      function(error) {
+        return Promise.reject(error);
+      }
+    );
   },
 
   methods: {
-    changeValue: function(idx) {
+    radioUpdate: function(idx) {
       this.selectedRadio = idx;
     },
     alertWarn(e) {

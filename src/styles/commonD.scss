@@ -19,16 +19,31 @@ $validred: #a94442;
   justify-content: space-between;
 }
 
+@mixin btnContainer {
+  margin: 10px 0;
+}
+
 @mixin blue-btn {
   background-color: $midblue;
+  color: white;
 
   &:hover {
     background-color: $midbluehover;
   }
 }
 
+@mixin red-btn {
+  background-color: $validred;
+  color: white;
+
+  &:hover {
+    background-color: #a13d3b;
+  }
+}
+
 @mixin black-btn {
   background-color: black;
+  color: white;
 
   &:hover {
     background-color: $darkgrey;

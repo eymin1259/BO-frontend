@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-unused-components */
 <template>
   <div class="product-regist">
     <div class="title">
@@ -5,6 +6,31 @@
         상품등록
       </h1>
       <span>상품 정보 등록</span>
+    </div>
+    <div v-if="mordalActive" class="seller-mordal">
+      <div>
+        <h2>셀러선택</h2>
+        <p>상품을 등록할 셀러를 선택해주세요. (검색 10건)</p>
+        <div>
+          <div class="seller-input">
+            <h3>셀러검색</h3>
+            <input
+              type="text"
+              placeholder="찾고싶은 셀러를 입력하세요."
+              v-model="sellerSearchInput"
+            />
+            <i class="fas fa-search" @click="sendSearch"></i>
+          </div>
+          <div class="result-container">
+            <ul v-show="searchActive" class="seller-result">
+              <li v-for="(result, idx) in searchResult" :key="idx">
+                <img src="{ result.url }" />
+                <span>{{ result.name }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="table-container">
       <table class="basic-table">
@@ -15,7 +41,7 @@
           <th>셀러선택 *</th>
           <td>
             <input class="seller-search" placeholder="셀러를 검색해주세요." />
-            <button class="search-btn">셀러검색</button>
+            <button class="search-btn" @click="sellerActive">셀러검색</button>
           </td>
         </tr>
         <tr height="50">
@@ -28,7 +54,7 @@
                 :label="idx + 1"
                 :buttonName="buttonName"
                 :key="idx"
-                @change="changeValue"
+                @change="radioUpdate"
               />
             </div>
           </td>
@@ -43,7 +69,7 @@
                 :label="idx + 1"
                 :buttonName="buttonName"
                 :key="idx"
-                @change="changeValue"
+                @change="radioUpdate"
               />
             </div>
           </td>
@@ -52,7 +78,7 @@
           <th>카테고리 *</th>
           <td>
             <div class="table-small">
-              <table-category :isColorOpen="isColorOpen"></table-category>
+              <TableCategory></TableCategory>
             </div>
           </td>
         </tr>
@@ -66,7 +92,7 @@
                 :label="idx + 1"
                 :buttonName="buttonName"
                 :key="idx"
-                @change="changeValue"
+                @change="radioUpdate"
               />
             </div>
           </td>
@@ -89,19 +115,35 @@
             <div class="img-regist-whole">
               <div class="img-regist-container">
                 <div class="img-container">
-                  <img
-                    src="https://sadmin.brandi.co.kr/include/img/no_image.png"
-                  />
+                  <button class="upload-blue-btn">
+                    대표 이미지 등록
+                  </button>
+                  <DropZone />
                 </div>
-                <button class="blue-btn">대표 이미지 등록</button>
               </div>
               <div class="img-regist-container">
                 <div class="img-container">
-                  <img
-                    src="https://sadmin.brandi.co.kr/include/img/no_image.png"
-                  />
+                  <button class="upload-black-btn">이미지 등록</button>
+                  <DropZone />
                 </div>
-                <button class="black-btn">이미지 등록</button>
+              </div>
+              <div class="img-regist-container">
+                <div class="img-container">
+                  <button class="upload-black-btn">이미지 등록</button>
+                  <DropZone />
+                </div>
+              </div>
+              <div class="img-regist-container">
+                <div class="img-container">
+                  <button class="upload-black-btn">이미지 등록</button>
+                  <DropZone />
+                </div>
+              </div>
+              <div class="img-regist-container">
+                <div class="img-container">
+                  <button class="upload-black-btn">이미지 등록</button>
+                  <DropZone />
+                </div>
               </div>
             </div>
           </td>
@@ -137,7 +179,7 @@
     </div>
 
     <div class="table-container">
-      <table class="basic-table">
+      <table class="option-table">
         <tr>
           <td colspan="2"><i class="fas fa-check"></i>옵션 정보</td>
         </tr>
@@ -154,10 +196,10 @@
           <th>옵션 정보</th>
           <td class="table-option-container">
             <div class="table-small">
-              <table-option
-                :isColorOpen="isColorOpen"
-                @click="open"
-              ></table-option>
+              <TableOption @optionRegist="optionRegist" />
+            </div>
+            <div class="table-small">
+              <TableOptionDetail :optionResult="optionResult" />
             </div>
           </td>
         </tr>
@@ -165,33 +207,43 @@
     </div>
 
     <div class="table-container">
-      <table class="basic-table">
+      <table class="dicount-table">
         <tr>
           <td colspan="2"><i class="fas fa-chart-line"></i>판매 정보</td>
         </tr>
         <tr height="50">
           <th>판매가</th>
           <td>
-            <p></p>
+            <div class="flex-box">
+              <input type="text" class="price-box" />
+              <div class="point-box">원</div>
+            </div>
           </td>
         </tr>
         <tr height="50">
           <th>할인 정보</th>
           <td>
-            <table class="discount-table"></table>
+            <TableDiscount />
           </td>
         </tr>
         <tr height="50">
           <th>최소 판매 수량</th>
           <td>
-            <label for="min-product">
-              <input type="radio" name="min-product" label="1" checked="true" />
-              1개 이상
-            </label>
-            <label for="min-product">
-              <input type="radio" name="min-product" label="2" />
-              <input type="text" />개 이상
-            </label>
+            <div class="flex-box">
+              <label for="min-product">
+                <input
+                  type="radio"
+                  name="min-product"
+                  label="1"
+                  checked="true"
+                />
+                1개 이상
+              </label>
+              <label for="min-product">
+                <input type="radio" name="min-product" label="2" />
+                <input type="text" class="sales-input" />개 이상
+              </label>
+            </div>
           </td>
         </tr>
         <tr height="50">
@@ -206,16 +258,22 @@
 <script>
 import RadioBtn from '../components/RadioBtn';
 import TableOption from '../components/TableOption';
+import TableOptionDetail from '../components/TableOptionDetail';
 import TableCategory from '../components/TableCategory';
-
-// import axios from 'axios';
+import TableDiscount from '../components/TableDiscount';
+import DropZone from '../components/DropZone';
+import axios from 'axios';
+import { config } from '../../config.js';
 
 export default {
   name: 'ProductRegist',
   components: {
     'radio-btn': RadioBtn,
-    'table-option': TableOption,
-    'table-category': TableCategory
+    TableOption,
+    TableOptionDetail,
+    TableCategory,
+    TableDiscount,
+    DropZone
   },
   data() {
     return {
@@ -223,14 +281,71 @@ export default {
       btnList1: ['판매', '미판매'],
       btnList2: ['진열', '미진열'],
       btnList3: ['상품상세 참조', '직접입력'],
-      isColorOpen: false
+      droplist: [],
+      mordalActive: false,
+      sellerSearchInput: '',
+      searchActive: false,
+      searchResult: [
+        {
+          attribute_id: 5,
+          id: 31,
+          image_url:
+            'https://forum-creallo.s3.dualstack.ap-northeast-2.amazonaws.com/original/1X/5e0d906585d6dbbf7f3c9997484eee594bd01da1.jpeg',
+          name: '이용민1'
+        },
+        {
+          attribute_id: 7,
+          id: 359,
+          image_url:
+            'https://forum-creallo.s3.dualstack.ap-northeast-2.amazonaws.com/original/1X/5e0d906585d6dbbf7f3c9997484eee594bd01da1.jpeg',
+          name: '이용민4'
+        },
+        {
+          attribute_id: 4,
+          id: 402,
+          image_url: null,
+          name: '이용민2'
+        }
+      ],
+      optionResult: {}
     };
   },
   methods: {
-    changeValue: function(idx) {
+    radioUpdate: function(idx) {
       this.selectedRadio = idx;
+    },
+    optionRegist(option) {
+      this.optionResult = option;
+    },
+    sellerActive() {
+      this.mordalActive = !this.mordalActive;
+    },
+    sendSearch() {
+      this.searchActive = !this.searchActive;
+      axios
+        .post(
+          `${config.product}/api/products/seller?q=${this.sellerSearchInput}`
+        )
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+          if (res.data) {
+            console.log('status 200');
+            this.searchResult = res.data;
+          }
+        })
+        .catch(err => {
+          if (err.response.data['MESSAGE']) {
+            alert('해당하는 셀러가 없습니다.');
+          }
+        });
     }
   }
+  // mounted() {
+  //   var file = { size: 123, name: 'Icon', type: 'image/png' };
+  //   var url = 'https://myvizo.com/img/logo_sm.png';
+  //   this.$refs.myVueDropzone.manuallyAddFile(file, url);
+  // }
 };
 </script>
 
@@ -239,6 +354,209 @@ export default {
 
 .table-small {
   position: relative;
+}
+
+.flex-box {
+  display: flex;
+  align-items: center;
+}
+
+.price-box {
+  display: flex;
+  align-items: center;
+  width: 150px;
+  height: 30px;
+  margin: 10px 0 10px 10px;
+  padding: 5px;
+  border: 1px solid $darkgrey;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  text-indent: 5px;
+}
+
+.point-box {
+  display: flex;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-top: 1px solid $darkgrey;
+  border-bottom: 1px solid $darkgrey;
+  border-right: 1px solid $darkgrey;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  text-indent: 5px;
+  color: white;
+  background-color: $midblue;
+}
+
+.discount-table {
+  width: 100%;
+}
+
+.sales-input {
+  width: 100px;
+  height: 30px;
+  margin: 0 10px;
+  padding: 5px;
+  border: 1px solid $darkgrey;
+  border-radius: 5px;
+  background-color: $lightgrey;
+  text-indent: 5px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+label {
+  margin-right: 20px;
+}
+
+tr {
+  color: $darkgrey;
+  font-size: 14px;
+
+  &:first-child {
+    height: 30px;
+    text-align: left;
+    text-indent: 15px;
+    color: white;
+    background-color: black;
+
+    .fa,
+    .fas {
+      margin-right: 10px;
+    }
+  }
+
+  &:last-child {
+    th {
+      border-bottom-left-radius: 10px;
+    }
+  }
+
+  // 셀러선택, 판매여부 ...
+  th {
+    display: table-cell;
+    vertical-align: middle;
+    min-width: 10vw;
+    max-width: 15vw;
+    padding: 10px;
+    border-top: 1px solid $darkgrey;
+
+    &:first-child {
+      background-color: $softgrey;
+    }
+  }
+
+  td {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px;
+    width: 100%;
+    border-left: 1px solid $darkgrey;
+    border-top: 1px solid $darkgrey;
+
+    // 검정색 바
+    &:first-child {
+      border: none;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+}
+
+.seller-mordal {
+  position: fixed;
+  top: 18%;
+  left: 34%;
+  width: 600px;
+  height: 400px;
+  padding: 30px;
+  color: $darkgrey;
+  background-color: $lightgrey;
+  border: 1px solid $midgrey;
+  border-radius: 5px;
+  z-index: 180;
+
+  h2 {
+    padding-bottom: 30px;
+    border-bottom: 1px solid $midgrey;
+    font-size: 22px;
+  }
+
+  p {
+    margin: 20px 0;
+    font-size: 12px;
+    color: $midblue;
+  }
+
+  .seller-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .result-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    .seller-result {
+      position: absolute;
+      top: 0;
+      left: 115px;
+      height: 250px;
+      font-size: 14px;
+      color: $darkgrey;
+      overflow: scroll;
+
+      li {
+        width: 350px;
+        height: 30px;
+        border: 1px solid $midgrey;
+        text-indent: 10px;
+        line-height: 30px;
+
+        img {
+          width: 10px;
+          height: 10px;
+        }
+      }
+    }
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  input[type='text'] {
+    width: 350px;
+    height: 30px;
+    margin: 10px 0;
+    border: 1px solid $darkgrey;
+    border-radius: 5px;
+    background-color: $lightgrey;
+    text-indent: 5px;
+  }
+}
+
+.upload-blue-btn {
+  @include blue-btn;
+  position: absolute;
+  top: 80px;
+  left: 35px;
+  pointer-events: none;
+}
+
+.upload-black-btn {
+  @include black-btn;
+  position: absolute;
+  top: 80px;
+  left: 48px;
+  pointer-events: none;
 }
 
 .product-regist {
@@ -261,13 +579,20 @@ export default {
     letter-spacing: 0.04rem;
   }
 
-  .plus-btn-container {
-    display: flex;
-    justify-content: center;
+  .img-container {
+    position: relative;
   }
 
-  .plus-btn {
-    padding: 0 10px;
+  .btn-container {
+    @include btnContainer;
+  }
+
+  .blue-btn {
+    @include blue-btn;
+  }
+
+  .black-btn {
+    @include black-btn;
   }
 
   .caption-blue-bold {
@@ -325,73 +650,19 @@ export default {
       border-radius: 5px;
     }
 
-    tr {
-      color: $darkgrey;
-      font-size: 14px;
-
-      &:first-child {
-        height: 30px;
-        text-align: left;
-        text-indent: 15px;
-        color: white;
-        background-color: black;
-
-        .fa,
-        .fas {
-          margin-right: 10px;
-        }
-      }
-
-      &:last-child {
-        th {
-          border-bottom-left-radius: 10px;
-        }
-      }
-
-      // 셀러선택, 판매여부 ...
-      th {
-        display: table-cell;
-        vertical-align: middle;
-        width: 20%;
-        border-top: 1px solid $darkgrey;
-
-        &:first-child {
-          background-color: $softgrey;
-        }
-      }
-
-      td {
-        display: table-cell;
-        vertical-align: middle;
-        padding: 10px;
-        border-left: 1px solid $darkgrey;
-        border-top: 1px solid $darkgrey;
-
-        // 검정색 바
-        &:first-child {
-          border: none;
-          border-top-left-radius: 10px;
-          border-top-right-radius: 10px;
-        }
-      }
-    }
-
     .img-regist-whole {
+      width: 100%;
+      padding: 0;
+      border: 1px solid $midgrey;
       display: flex;
       flex-wrap: wrap;
 
       .img-regist-container {
         width: 200px;
-        height: 200px;
+        margin: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
-
-        img {
-          width: 160px;
-          height: 160px;
-          border: 1px solid $darkgrey;
-        }
 
         button {
           margin-top: 10px;

@@ -1,11 +1,26 @@
+/* eslint-disable vue/no-unused-components */
 <template>
   <div>
-    <div class="drop-list" v-show="isColorOpen">
-      <i class="fas fa-times"></i>
-      <input v-model="testInput" type="text" />
+    <div class="drop-list">
+      <input type="text" v-model="listSearch" @keyup="listFilter" />
       <ul>
-        <li v-for="(color, idx) in option.color_option" :key="idx">
-          {{ color }}
+        <li v-show="noResult">
+          검색 결과가 없습니다.
+        </li>
+        <li
+          v-for="(value, idx) in optionData"
+          v-show="listSearchRes.length === 0 && !noResult"
+          :key="'list1' + idx"
+          @click="updateSelect(idx)"
+        >
+          {{ value }}
+        </li>
+        <li
+          v-for="(searchRes, idx) in listSearchRes"
+          v-show="listSearchRes.length > 0"
+          :key="'list2' + idx"
+        >
+          {{ searchRes }}
         </li>
       </ul>
     </div>
@@ -13,14 +28,45 @@
 </template>
 
 <script>
-import { option } from '@/assets/mock/productRegist.js';
 export default {
   name: 'DropList',
+  props: ['option', 'type', 'id'],
+
   data() {
     return {
-      option: option,
-      closeClicked: false
+      optionData: '',
+      typeData: '',
+      updateValue: '',
+      listSearch: '',
+      listSearchRes: [],
+      noResult: false
     };
+  },
+
+  created() {
+    this.optionData = this.option;
+    this.typeData = this.type;
+  },
+  methods: {
+    updateSelect(idx) {
+      event.stopPropagation();
+
+      if (this.$el.className) {
+        this.$emit(`update${this.typeData}`, [idx, this.$el.className]);
+      }
+    },
+    listFilter() {
+      this.listSearchRes = this.optionData.filter(
+        el => el.toLowerCase().indexOf(this.listSearch.toLowerCase()) !== -1
+      );
+      if (this.listSearchRes.length === 0) {
+        this.noResult = true;
+      }
+      if (this.listSearchRes.length > 0) {
+        this.noResult = false;
+      }
+      console.log(this.listSearchRes);
+    }
   }
 };
 </script>
@@ -29,12 +75,14 @@ export default {
 @import '../styles/commonD.scss';
 
 .drop-list {
+  // display: none;
   background-color: $midgrey;
   position: relative;
   top: 0;
   height: 230px;
   cursor: pointer;
   overflow: scroll;
+  z-index: 100;
 
   input[type='text'] {
     width: 90%;
