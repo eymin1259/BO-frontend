@@ -10,8 +10,8 @@
         v-for="main of menus"
         @click="changeCurrMain(main.param)"
       >
-        <a
-          :href="main.param === 'home' && '/'"
+        <router-link
+          :to="main.param === 'home' ? '/' : ''"
           :class="[
             'main-link',
             main.param === mainMenu && 'active',
@@ -25,15 +25,20 @@
           <div>
             <i class="arrow" />
           </div>
-        </a>
+        </router-link>
         <ul :class="['sub-menus', main.param !== checkedMenu && 'hidden']">
-          <li class="sub-menu" :key="sub.name" v-for="sub of main.sub">
-            <a
+          <li
+            class="sub-menu"
+            :key="sub.name"
+            v-for="sub of main.sub"
+            @click="changeCurrSub(sub.param)"
+          >
+            <router-link
+              :to="sub.url"
               :class="['sub-link', sub.param === subMenu && 'active']"
-              :href="sub.url"
             >
               {{ sub.name }}
-            </a>
+            </router-link>
           </li>
         </ul>
       </li>
@@ -47,15 +52,23 @@ export default {
   data() {
     return {
       menus,
-      mainMenu: this.$route.path.split('/')[1],
-      subMenu: this.$route.path.split('/')[2],
-      checkedMenu: this.$route.path.split('/')[1],
+      checkedMenu: this.$route.params.mainMenu,
+      subMenu: this.$route.params.subMenu,
       fold: false
     };
   },
+  computed: {
+    mainMenu() {
+      return this.$route.params.mainMenu;
+    }
+  },
   methods: {
     changeCurrMain(main) {
-      this.checkedMenu = main;
+      this.checkedMenu = this.checkedMenu === main ? '' : main;
+    },
+    changeCurrSub(sub) {
+      this.subMenu = sub;
+      this.changeCurrMain(this.mainMenu);
     },
     toggleFold() {
       this.fold = !this.fold;
@@ -107,7 +120,6 @@ aside {
 
     .main-menu {
       border-bottom: 1px solid #414247;
-      transition: max-height 1.2s;
 
       &:last-child {
         border-bottom: 0;
@@ -124,7 +136,6 @@ aside {
         text-decoration: none;
         cursor: pointer;
         color: #eee;
-        transition: max-height 1.2s;
 
         &:hover {
           color: #f1f1f1;
@@ -209,23 +220,31 @@ aside {
       }
 
       .sub-menus {
-        margin: 8px 0px;
-        max-height: 100%;
-        transition: max-height 0.6s;
+        overflow: hidden;
 
         &.hidden {
-          overflow: hidden;
           margin: 0px;
-          max-height: 0px;
-          transition: max-height 0.5s ease;
+
+          .sub-menu {
+            height: 0px;
+          }
         }
 
         .sub-menu {
-          margin-top: 1px;
-          transition: max-height 0.6s;
+          display: flex;
+          align-items: center;
+          height: 40px;
+          transition: height 0.3s ease;
+
+          &:hover {
+            color: #fff;
+            background: #414247;
+          }
 
           .sub-link {
             display: flex;
+            align-items: center;
+            width: 100%;
             padding: 8px 0px 8px 35px;
             text-decoration: none;
             font-size: 14px;
@@ -236,14 +255,9 @@ aside {
             text-decoration: none;
             cursor: pointer;
             color: #eee;
-            transition: max-height 0.6s;
-
-            &:hover {
-              color: #fff;
-              background: #414247;
-            }
 
             &.active {
+              height: 40px;
               color: #fff;
               background: #414247;
             }

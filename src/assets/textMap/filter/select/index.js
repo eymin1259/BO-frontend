@@ -1,37 +1,35 @@
+export const ORDER_SELECT = {
+  ORDER_CD: '주문번호',
+  ORDER_DETAIL: '주문상세번호',
+  ORDER_NAME: '주문자명',
+  ORDER_TELNO: '핸드폰번호',
+  MD_KO_NAME: '셀러명',
+  PRODUCT_NAME: '상품명'
+};
+export const PRODUCT_SELECT = {
+  PRODUCT_NAME: '상품명',
+  PRODUCT_NO: '상품번호',
+  PRODUCT_CD: '상품코드'
+};
+export const QNA_SELECT = {
+  PRODUCT_NAME: '상품명',
+  PRODUCT_INQRY_NO: '글번호',
+  MD_KO_NAME: '셀러명',
+  ORDER_NO: '주문자번호'
+};
+export const REVIEW_SELECT = {
+  PRODUCT_INQRY_NO: '글번호',
+  MEMBER_NICK: '회원닉네임',
+  REVIEW: '리뷰내용'
+};
+export const REVIEW_SORT = {
+  NEW_REGIST: '등록일시 최신순',
+  NEW_EDIT: '수정일시 최신순'
+};
 export default {
-  SELLER_TYPE: [
-    '쇼핑몰',
-    '마켓',
-    '로드맵',
-    '디자이너브랜드',
-    '제너럴브랜드',
-    '내셔널브랜드',
-    '뷰티'
-  ],
-  SALES: ['판매', '미판매'],
-  DISCOUNT: ['할인', '미할인'],
-  DISPLAY: ['진열', '미진열'],
-  ORDER_DATE: { 0: '오늘', 3: '3일', 7: '1주일', 30: '1개월', 90: '3개월' },
-  SHIP_DATE: { 0: '오늘', 3: '3일', 7: '7일', 15: '15일' },
-  ORDER_CANCEL_DATE: { 3: '3일' },
-  ORDER_CANCEL_REASON: ['구매자취소', '구매자변심', '상품품절'],
-  REFUND_DATE: { 0: '오늘', 3: '3일', 7: '7일', 15: '15일', 30: '30일' },
-  REFUND_REASON: [
-    '단순변심',
-    '상품불량',
-    '오배송',
-    '교환요청',
-    '일부상품누락',
-    '기타'
-  ],
-  REQ_TYPE: [
-    '상품 문의',
-    '교환/반품',
-    '불량/오배송',
-    '기타',
-    '배송 문의',
-    '하루배송',
-    '취소/변경'
-  ],
-  REVIEW_DATE: { 0: '오늘', 3: '3일', 7: '1주일' }
+  ORDER_SELECT,
+  PRODUCT_SELECT,
+  QNA_SELECT,
+  REVIEW_SELECT,
+  REVIEW_SORT
 };
