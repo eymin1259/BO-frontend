@@ -49,7 +49,7 @@ export const router = new VueRouter({
       component: Signup
     },
     {
-      path: '/:lookup',
+      path: '/:mainMenu/:subMenu',
       name: 'Lookup',
       component: Lookup
     }

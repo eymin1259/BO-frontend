@@ -24,18 +24,18 @@ export default [
     sub: [
       {
         name: '환불요청관리',
-        param: 'request',
-        url: '/refund_order/request'
+        param: 'refundrequest',
+        url: '/refund_order/refundrequest'
       },
       {
         name: '환불완료관리',
-        param: 'complete',
-        url: '/refund_order/complete'
+        param: 'refundcomplete',
+        url: '/refund_order/refundcomplete'
       },
       {
         name: '주문취소완료관리',
-        param: 'cancel',
-        url: '/refund_order/cancel'
+        param: 'ordercancel',
+        url: '/refund_order/ordercancel'
       }
     ]
   },
