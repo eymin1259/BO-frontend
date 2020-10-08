@@ -42,6 +42,7 @@ header {
   margin: 0;
   background: #873b53;
   box-shadow: none;
+  z-index: 1200;
 
   .page-logo {
     display: flex;

@@ -2,7 +2,12 @@
   <div class="input">
     <div class="title-box">{{ title }} :</div>
     <div class="input-box">
-      <input type="text" :placeholder="placeholder" @change="setWord" />
+      <input
+        type="text"
+        :value="value"
+        :placeholder="placeholder"
+        @change="setWord"
+      />
     </div>
   </div>
 </template>
@@ -24,13 +29,8 @@ export default {
         return getters[NAMESPACE[this.namespace] + `/get${this.filterKey}`];
       }
     }),
-    value: {
-      get() {
-        return this.getValue;
-      },
-      set(value) {
-        this.setValue(value);
-      }
+    value() {
+      return this.getValue;
     }
   },
   methods: {
@@ -43,8 +43,7 @@ export default {
       }
     }),
     setWord(e) {
-      this.word = e.target.value;
-      this.setValue = e.target.value;
+      this.setValue(e.target.value);
     }
   }
 };

@@ -1,13 +1,12 @@
 <template>
   <div class="select">
-    <div v-if="title" class="title-box">{{ title }} :</div>
     <div v-if="options" class="select-box">
-      <select @change="setSearch">
+      <select @change="search">
         <option
           :key="key"
           v-for="[key, title] of Object.entries(options)"
           :value="key"
-          :selected="value === +key"
+          :selected="limit === +key"
           >{{ title }}
         </option>
       </select>
@@ -22,8 +21,7 @@ import NAMESPACE from '@/store/modules/types';
 export default {
   props: {
     options: Object,
-    title: { type: [String, null], required: false },
-    filterKey: String
+    orderStatus: Number
   },
   data() {
     return {
@@ -32,25 +30,22 @@ export default {
   },
   computed: {
     ...mapState({
-      getValue(state, getters) {
-        return getters[NAMESPACE[this.namespace] + `/get${this.filterKey}`];
+      getLimit(state, getters) {
+        return getters[NAMESPACE[this.namespace] + `/getLimit`];
       }
     }),
-    value() {
-      return this.getValue;
+    limit() {
+      return this.getLimit;
     }
   },
   methods: {
     ...mapActions({
-      setValue(dispatch, value) {
-        return dispatch(
-          NAMESPACE[this.namespace] + `/set${this.filterKey}`,
-          value
-        );
+      searchByLimit(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + `/searchByLimit`, payload);
       }
     }),
-    setSearch(e) {
-      this.setValue(e.target.value);
+    search(e) {
+      this.searchByLimit({ status: this.orderStatus, limit: e.target.value });
     }
   }
 };
@@ -63,13 +58,6 @@ export default {
   align-items: center;
   padding: 0 15px;
   margin: 10px 0;
-
-  .title-box {
-    width: 125px;
-    height: 30px;
-    padding: 7px 0 0 10px;
-    font-size: 14px;
-  }
 
   .select-box {
     padding-right: 5px;

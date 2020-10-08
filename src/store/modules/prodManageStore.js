@@ -1,36 +1,43 @@
 import { productApi } from '@/api';
-
-const makeUp = filters => {
-  const _filters = { ...filters };
-  for (const [key, value] of Object.entries(filters)) {
-    if (!value) delete _filters[key];
-  }
-  delete _filters.isLoading;
-  delete _filters.filteredResult;
-  return _filters;
-};
+import { fromNow, dateToString, makeUp } from '../_utils';
 
 export default {
   namespaced: true,
   state: {
-    isLoading: true,
+    isLoading: false,
+    namespace: '',
     selectFilter: '',
     filterKeyword: '',
-    filterDateFrom: '',
-    filterDateTo: '',
+    filterDateFrom: fromNow(3),
+    filterDateTo: new Date(),
     mdName: '',
     mdSeNo: [],
-    discountYn: '',
-    exhibitionYn: '',
-    sellYn: '',
-    filterLimit: '',
+    discountYn: -1,
+    exhibitionYn: -1,
+    sellYn: -1,
+    filterLimit: 10,
     page: 1,
-    filteredResult: []
+    filteredResult: [],
+    page_number: 0,
+    total_order_number: 0
   },
 
   getters: {
     getFilters(state) {
-      return state;
+      const filters = { ...makeUp(state) };
+      delete filters.filterOrder;
+      delete filters.filterLimit;
+      if (filters.filterDateFrom) {
+        filters.from = dateToString(filters.filterDateFrom);
+        delete filters.filterDateFrom;
+      }
+      if (filters.filterDateTo) {
+        filters.to = dateToString(filters.filterDateTo);
+        delete filters.filterDateTo;
+      }
+      if (filters.page === 1) delete filters.page;
+      filters.mdSeNo = filters.mdSeNo.join(',');
+      return filters;
     },
     getSelectFilter(state) {
       return state.selectFilter;
@@ -68,8 +75,17 @@ export default {
     getIsLoading(state) {
       return state.isLoading;
     },
+    getNamespace(state) {
+      return state.namespace;
+    },
     getResult(state) {
       return state.filteredResult;
+    },
+    getLastPage(state) {
+      return state.page_number;
+    },
+    getTotalNumber(state) {
+      return state.total_order_number;
     }
   },
 
@@ -84,10 +100,10 @@ export default {
       state.mdName = value;
     },
     setDateFrom(state, value) {
-      state.filterDateFrom = new Date(value);
+      state.filterDateFrom = value;
     },
     setDateTo(state, value) {
-      state.filterDateTo = new Date(value);
+      state.filterDateTo = value;
     },
     setSellerType(state, values) {
       state.mdSeNo = values;
@@ -110,16 +126,34 @@ export default {
     setResult(state, result) {
       state.filteredResult = result;
     },
+    setLastPage(state, value) {
+      state.page_number = value;
+    },
+    setTotalNumber(state, value) {
+      state.total_order_number = value;
+    },
     setIsLoading(state, value) {
       state.isLoading = value;
     },
+    setNamespace(state, value) {
+      state.namespace = value;
+    },
     reset(state) {
+      state.isLoading = false;
       state.selectFilter = '';
       state.filterKeyword = '';
       state.filterDateFrom = '';
       state.filterDateTo = '';
+      state.mdName = '';
       state.mdSeNo = [];
+      state.discountYn = -1;
+      state.exhibitionYn = -1;
+      state.sellYn = -1;
+      state.filterLimit = 10;
+      state.page = 1;
       state.filteredResult = [];
+      state.page_number = 0;
+      state.total_order_number = 0;
     }
   },
 
@@ -157,21 +191,25 @@ export default {
     setPage({ commit }, value) {
       commit('setPage', value);
     },
+    setNamespace({ commit }, value) {
+      commit('setNamespace', value);
+    },
     search({ commit, state }, status) {
-      commit('setIsLoading', false);
+      commit('setIsLoading', true);
       const filters = makeUp(state);
-      console.log(filters);
 
       productApi
         .getProducts(status, filters)
         .then(res => {
           console.log(res);
           commit('setResult', res.data.orders);
-          commit('setIsLoading', true);
+          commit('setLastPage', res.data.page_number);
+          commit('setTotalNumber', res.data.total_order_number);
+          commit('setIsLoading', false);
         })
         .catch(err => {
           console.error(err);
-          commit('setIsLoading', true);
+          commit('setIsLoading', false);
         });
     },
     searchByOrder({ commit, dispatch }, { status, order }) {
@@ -179,7 +217,7 @@ export default {
       dispatch('search', status);
     },
     searchByLimit({ commit, dispatch }, { status, limit }) {
-      commit('setFilterOrder', limit);
+      commit('setLimit', limit);
       dispatch('search', status);
     },
     searchByPage({ commit, dispatch }, { status, page }) {
