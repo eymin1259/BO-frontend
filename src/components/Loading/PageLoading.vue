@@ -1,8 +1,7 @@
 <template>
   <div class="loading-container">
-    <div class="spinner-block">
-      <img alt="loading_spinner" src="@/assets/images/loading_spinner.gif" />
-      <div class="loading-text">Loading...</div>
+    <div class="loading-block">
+      <img src="@/assets/images/brandi_loading.png" />
     </div>
   </div>
 </template>
@@ -29,27 +28,18 @@ export default {
   z-index: 1000;
   cursor: wait;
 
-  .spinner-block {
+  .loading-block {
     position: absolute;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    width: 120px;
-    height: 45px;
-    top: 120px;
-    left: 45%;
-    border-radius: 4px;
+    padding: 0px;
+    margin: 0px;
+    width: 45%;
+    top: 45%;
+    left: 25%;
     text-align: center;
     color: rgb(0, 0, 0);
-    background: #e6e6e6;
+    border: 0px;
     z-index: 1011;
     cursor: wait;
-
-    .loading-text {
-      display: flex;
-      align-items: center;
-      margin-left: 12px;
-    }
   }
 }
 </style>

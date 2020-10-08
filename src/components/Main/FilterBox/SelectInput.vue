@@ -8,34 +8,72 @@
             :key="key"
             v-for="[key, title] of Object.entries(options)"
             :value="key"
-            >{{ title }}</option
-          >
+            :selected="key === selectFilter"
+            >{{ title }}
+          </option>
         </optgroup>
       </select>
     </div>
     <div class="input-box">
-      <input type="text" placeholder="검색어를 입력하세요" @change="setWord" />
+      <input
+        type="text"
+        :value="keyword"
+        placeholder="검색어를 입력하세요"
+        @change="setWord"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+import NAMESPACE from '@/store/modules/types';
+
 export default {
   props: {
     options: Object
   },
   data() {
     return {
-      search: '',
-      word: ''
+      namespace: this.$route.params.subMenu
     };
   },
+  computed: {
+    ...mapState({
+      getSelectFilter(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getSelectFilter'];
+      },
+      getFilterKeyword(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getFilterKeyword'];
+      }
+    }),
+    selectFilter() {
+      return this.getSelectFilter;
+    },
+    keyword() {
+      return this.getFilterKeyword;
+    }
+  },
   methods: {
+    ...mapActions({
+      setSelectFilter(dispatch, payload) {
+        return dispatch(
+          NAMESPACE[this.namespace] + '/setSelectFilter',
+          payload
+        );
+      },
+      setFilterKeyword(dispatch, payload) {
+        return dispatch(
+          NAMESPACE[this.namespace] + '/setFilterKeyword',
+          payload
+        );
+      }
+    }),
     setSearch(e) {
-      this.search = e.target.value;
+      this.setSelectFilter(e.target.value);
     },
     setWord(e) {
-      this.word = e.target.value;
+      this.setFilterKeyword(e.target.value);
     }
   }
 };

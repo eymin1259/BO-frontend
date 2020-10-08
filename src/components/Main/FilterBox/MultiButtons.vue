@@ -2,7 +2,7 @@
   <div class="button-block">
     <div class="title-box">{{ title }} :</div>
     <ul class="button-box">
-      <li :class="['button', all && 'checked']" @click="setAll">
+      <li :class="['button', isAll && 'checked']" @click="setAll">
         전체
       </li>
       <li
@@ -25,7 +25,6 @@ export default {
   props: { title: String, buttons: Object, default: Number },
   data() {
     return {
-      all: true,
       namespace: this.$route.params.subMenu
     };
   },
@@ -37,6 +36,12 @@ export default {
     }),
     sellerType() {
       return this.getSellerType;
+    },
+    isAll() {
+      return (
+        this.sellerType.length === Object.keys(this.buttons).length ||
+        this.sellerType.length === 0
+      );
     }
   },
   methods: {
@@ -46,7 +51,6 @@ export default {
       }
     }),
     setChecked(key) {
-      this.all = false;
       const newChecked = [...this.sellerType];
       let index;
       if ((index = newChecked.indexOf(key)) !== -1) {
@@ -55,20 +59,10 @@ export default {
         newChecked.push(key);
       }
       this.setSellerType(newChecked.sort((a, b) => a - b));
-      if (this._isAll()) this.setAll();
+      if (this.isAll) this.setAll();
     },
     setAll() {
       this.setSellerType([]);
-      this.all = true;
-    },
-    _isAll() {
-      if (
-        this.sellerType.length === Object.keys(this.buttons).length ||
-        this.sellerType.length === 0
-      ) {
-        return true;
-      }
-      return false;
     }
   }
 };

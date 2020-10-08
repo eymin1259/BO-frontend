@@ -3,13 +3,13 @@
     <div class="title-box">{{ title }} :</div>
     <ul class="button-box">
       <li
-        :class="['button', checked === -1 && 'checked']"
+        :class="['button', dateValue === -1 && 'checked']"
         @click="setChecked(-1)"
       >
         전체
       </li>
       <li
-        :class="['button', checked === +key && 'checked']"
+        :class="['button', dateValue === +key && 'checked']"
         :key="key"
         v-for="[key, value] of Object.entries(buttons)"
         @click="setChecked(+key)"
@@ -47,7 +47,6 @@ export default {
   },
   data() {
     return {
-      checked: this.default,
       namespace: this.$route.params.subMenu
     };
   },
@@ -58,6 +57,9 @@ export default {
       },
       getDateTo(state, getters) {
         return getters[NAMESPACE[this.namespace] + '/getDateTo'];
+      },
+      getDateValue(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getDateValue'];
       }
     }),
     from: {
@@ -75,6 +77,9 @@ export default {
       set(value) {
         this.setDateTo(value);
       }
+    },
+    dateValue() {
+      return this.getDateValue;
     }
   },
   methods: {
@@ -84,15 +89,13 @@ export default {
       },
       setDateTo(dispatch, payload) {
         return dispatch(NAMESPACE[this.namespace] + '/setDateTo', payload);
+      },
+      setDateValue(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + '/setDateValue', payload);
       }
     }),
     setChecked(value) {
-      if (value === -1) {
-        this.checked = value;
-        this.setDate(value);
-        return;
-      }
-      this.checked = value;
+      this.setDateValue(value);
       this.setDate(value);
     },
     setDate(value) {

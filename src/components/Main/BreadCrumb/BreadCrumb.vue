@@ -11,19 +11,24 @@
       </li>
     </ul>
     <div class="sort-box">
-      <Select filterKey="FilterOrder" :options="sort" />
-      <Select filterKey="Limit" :options="limit" />
+      <Sort :options="sort" :orderStatus="orderStatus" />
+      <Limit :options="limit" :orderStatus="orderStatus" />
     </div>
   </div>
 </template>
 
 <script>
 import path from '@/assets/textMap';
-import Select from '@/components/Main/FilterBox/Select';
+import Sort from '@/components/Main/BreadCrumb/Sort';
+import Limit from '@/components/Main/BreadCrumb/Limit';
 
 export default {
   components: {
-    Select
+    Sort,
+    Limit
+  },
+  props: {
+    orderStatus: Number
   },
   data() {
     const { main, sub, sort, limit } = path[this.$route.params.subMenu];

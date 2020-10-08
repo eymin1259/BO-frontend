@@ -38,13 +38,14 @@
         <Select
           v-if="filter.type === 8"
           :title="filter.title"
+          :filterKey="filter.key"
           :options="filter.values"
         />
       </li>
     </ul>
     <div class="filter-action">
       <div class="button search" @click="searchResult">검색</div>
-      <div class="button reset">초기화</div>
+      <div class="button reset" @click="reset">초기화</div>
     </div>
   </div>
 </template>
@@ -58,7 +59,7 @@ import Date from '@/components/Main/FilterBox/Date';
 import Input from '@/components/Main/FilterBox/Input';
 import SelectDate from '@/components/Main/FilterBox/SelectDate';
 import Select from '@/components/Main/FilterBox/Select';
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import NAMESPACE from '@/store/modules/types';
 
 export default {
@@ -82,6 +83,16 @@ export default {
       namespace: this.$route.params.subMenu
     };
   },
+  computed: {
+    ...mapState({
+      getFilters(state, getters) {
+        return getters[NAMESPACE[this.namespace] + `/getFilters`];
+      }
+    }),
+    queries() {
+      return this.getFilters;
+    }
+  },
   methods: {
     ...mapActions({
       search(dispatch, payload) {
@@ -94,10 +105,9 @@ export default {
     searchResult() {
       console.log(this.orderStatus);
       this.search(this.orderStatus);
+      console.log(this.queries);
+      this.$router.push({ query: this.queries });
     }
-  },
-  mounted() {
-    this.reset();
   }
 };
 </script>

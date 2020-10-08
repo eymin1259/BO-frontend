@@ -1,34 +1,41 @@
 import { orderApi } from '@/api';
-
-const makeUp = filters => {
-  const _filters = { ...filters };
-  for (const [key, value] of Object.entries(filters)) {
-    if (!value) delete _filters[key];
-  }
-  delete _filters.isLoading;
-  delete _filters.filteredResult;
-  return _filters;
-};
+import { fromNow, dateToString, makeUp } from '../_utils';
 
 export default {
   namespaced: true,
   state: {
-    isLoading: true,
+    isLoading: false,
+    namespace: '',
     selectFilter: '',
     filterKeyword: '',
-    dateValue: 3,
+    dateValue: 7,
     filterDateFrom: '',
     filterDateTo: '',
     mdSeNo: [],
-    filterOrder: '',
-    filterLimit: 10,
+    filterOrder: 'NEW',
+    filterLimit: 50,
     page: 1,
-    filteredResult: []
+    filteredResult: [],
+    page_number: 0,
+    total_order_number: 0
   },
 
   getters: {
     getFilters(state) {
-      return state;
+      const filters = { ...makeUp(state) };
+      delete filters.filterOrder;
+      delete filters.filterLimit;
+      if (filters.filterDateFrom) {
+        filters.from = dateToString(filters.filterDateFrom);
+        delete filters.filterDateFrom;
+      }
+      if (filters.filterDateTo) {
+        filters.to = dateToString(filters.filterDateTo);
+        delete filters.filterDateTo;
+      }
+      if (filters.page === 1) delete filters.page;
+      filters.mdSeNo = filters.mdSeNo.join(',');
+      return filters;
     },
     getSelectFilter(state) {
       return state.selectFilter;
@@ -60,8 +67,17 @@ export default {
     getIsLoading(state) {
       return state.isLoading;
     },
+    getNamespace(state) {
+      return state.namespace;
+    },
     getResult(state) {
       return state.filteredResult;
+    },
+    getLastPage(state) {
+      return state.page_number;
+    },
+    getTotalNumber(state) {
+      return state.total_order_number;
     }
   },
 
@@ -76,10 +92,10 @@ export default {
       state.dateValue = value;
     },
     setDateFrom(state, value) {
-      state.filterDateFrom = new Date(value);
+      state.filterDateFrom = value;
     },
     setDateTo(state, value) {
-      state.filterDateTo = new Date(value);
+      state.filterDateTo = value;
     },
     setSellerType(state, values) {
       state.mdSeNo = values;
@@ -99,17 +115,31 @@ export default {
     setIsLoading(state, value) {
       state.isLoading = value;
     },
+    setNamespace(state, value) {
+      state.namespace = value;
+    },
+    setLastPage(state, value) {
+      state.page_number = value;
+    },
+    setTotalNumber(state, value) {
+      state.total_order_number = value;
+    },
     reset(state) {
       const defaultTerm = 3;
-      const fromDate = new Date();
-      fromDate.setDate(fromDate.getDate() - defaultTerm);
 
+      state.isLoading = false;
       state.selectFilter = '';
       state.filterKeyword = '';
-      state.dateValue = defaultTerm;
-      state.filterDateFrom = fromDate;
+      state.dateValue = 3;
+      state.filterDateFrom = fromNow(defaultTerm);
       state.filterDateTo = new Date();
       state.mdSeNo = [];
+      state.filterOrder = 'NEW';
+      state.filterLimit = 50;
+      state.page = 1;
+      state.filteredResult = [];
+      state.page_number = 0;
+      state.total_order_number = 0;
     }
   },
 
@@ -141,32 +171,34 @@ export default {
     setPage({ commit }, value) {
       commit('setPage', value);
     },
-    setResult({ commit }, result) {
-      commit('filteredResult', result);
+    setNamespace({ commit }, value) {
+      commit('setNamespace', value);
     },
     search({ commit, state }, status) {
-      commit('setIsLoading', false);
+      commit('setIsLoading', true);
       const filters = makeUp(state);
-      console.log(filters);
 
       orderApi
         .getOrder(status, filters)
         .then(res => {
           console.log(res);
           commit('setResult', res.data.orders);
-          commit('setIsLoading', true);
+          commit('setLastPage', res.data.page_number);
+          commit('setTotalNumber', res.data.total_order_number);
+          commit('setIsLoading', false);
         })
         .catch(err => {
           console.error(err);
-          commit('setIsLoading', true);
+          commit('setIsLoading', false);
         });
     },
     searchByOrder({ commit, dispatch }, { status, order }) {
+      console.log(status, 'order');
       commit('setFilterOrder', order);
       dispatch('search', status);
     },
     searchByLimit({ commit, dispatch }, { status, limit }) {
-      commit('setFilterOrder', limit);
+      commit('setLimit', limit);
       dispatch('search', status);
     },
     searchByPage({ commit, dispatch }, { status, page }) {

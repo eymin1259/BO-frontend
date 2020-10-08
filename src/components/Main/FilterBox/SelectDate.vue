@@ -2,25 +2,24 @@
   <div class="select-date">
     <div class="select-box">
       <select @change="setSearch">
-        <optgroup>
-          <option
-            :key="key"
-            v-for="[key, title] of Object.entries(options)"
-            :value="key"
-            >{{ title }}</option
-          >
-        </optgroup>
+        <option
+          :key="key"
+          v-for="[key, title] of Object.entries(options)"
+          :value="key"
+          :checked="inquiryType === key"
+          >{{ title }}</option
+        >
       </select>
     </div>
     <ul class="button-box">
       <li
-        :class="['button', checked === -1 && 'checked']"
+        :class="['button', dateValue === -1 && 'checked']"
         @click="setChecked(-1)"
       >
         전체
       </li>
       <li
-        :class="['button', checked === +key && 'checked']"
+        :class="['button', dateValue === +key && 'checked']"
         :key="key"
         v-for="[key, value] of Object.entries(buttons)"
         @click="setChecked(+key)"
@@ -48,6 +47,8 @@
 
 <script>
 import Datepicker from 'vuejs-datepicker/dist/vuejs-datepicker.esm.js';
+import { mapState, mapActions } from 'vuex';
+import NAMESPACE from '@/store/modules/types';
 
 export default {
   components: {
@@ -59,39 +60,82 @@ export default {
     default: Number
   },
   data() {
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - this.default);
     return {
-      search: '',
-      checked: this.default,
-      from: fromDate,
-      to: new Date()
+      namespace: this.$route.params.subMenu
     };
   },
-
+  computed: {
+    ...mapState({
+      getDateFrom(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getDateFrom'];
+      },
+      getDateTo(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getDateTo'];
+      },
+      getDateValue(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getDateValue'];
+      },
+      getInquiryType(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getInquiryType'];
+      }
+    }),
+    from: {
+      get() {
+        return this.getDateFrom;
+      },
+      set(value) {
+        this.setDateFrom(value);
+      }
+    },
+    to: {
+      get() {
+        return this.getDateTo;
+      },
+      set(value) {
+        this.setDateTo(value);
+      }
+    },
+    dateValue() {
+      return this.getDateValue;
+    },
+    inquiryType() {
+      return this.getInquiryType;
+    }
+  },
   methods: {
+    ...mapActions({
+      setDateFrom(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + '/setDateFrom', payload);
+      },
+      setDateTo(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + '/setDateTo', payload);
+      },
+      setDateValue(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + '/setDateValue', payload);
+      },
+      setInquiryType(dispatch, payload) {
+        console.log('call setInquiryType');
+        return dispatch(NAMESPACE[this.namespace] + '/setInquiryType', payload);
+      }
+    }),
     setSearch(e) {
-      this.search = e.target.value;
+      console.log(e);
+      this.setInquiryType(e.target.value);
     },
     setChecked(value) {
-      if (value === -1) {
-        this.checked = value;
-        this.setDate(value);
-        return;
-      }
-      this.checked = value;
+      this.setDateValue(value);
       this.setDate(value);
     },
     setDate(value) {
       if (value === -1) {
-        this.from = '';
-        this.to = '';
+        this.setDateFrom('');
+        this.setDateTo('');
         return;
       }
       const fromDate = new Date();
       fromDate.setDate(fromDate.getDate() - +value);
-      this.from = fromDate;
-      this.to = new Date();
+      this.setDateFrom(fromDate);
+      this.setDateTo(new Date());
     }
   }
 };

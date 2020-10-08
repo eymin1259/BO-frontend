@@ -58,7 +58,7 @@ export default {
     sort: DELIVERY_SORT,
     table: DELIVERY_TB,
     limit: LONG_LIMIT,
-    orderStatus: 2
+    orderStatus: 3
   },
   deliverycomplete: {
     main: '주문 관리',
@@ -67,7 +67,7 @@ export default {
     sort: DELIVERY_COMP_SORT,
     table: DELIVERY_COMP_TB,
     limit: LONG_LIMIT,
-    orderStatus: 3
+    orderStatus: 4
   },
   refundrequest: {
     main: '취소/환불 관리',
@@ -76,7 +76,7 @@ export default {
     sort: REFUND_REQ_SORT,
     table: REFUND_REQ_TB,
     limit: LONG_LIMIT,
-    orderStatus: 4
+    orderStatus: 7
   },
   refundcomplete: {
     main: '취소/환불 관리',
@@ -85,7 +85,7 @@ export default {
     sort: REFUND_COMP_SORT,
     table: REFUND_COMP_TB,
     limit: LONG_LIMIT,
-    orderStatus: 5
+    orderStatus: 8
   },
   ordercancel: {
     main: '취소/환불 관리',

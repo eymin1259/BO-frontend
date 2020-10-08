@@ -31,6 +31,8 @@ export default {
   color: #222;
 
   main {
+    position: relative;
+    height: calc(100% - 45px);
     min-height: 695px;
     margin-left: 215px;
     padding: 25px 20px 20px 20px;
