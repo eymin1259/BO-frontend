@@ -18,7 +18,19 @@ export const ORDER_MAP = {
   shipping_complete_date: '배송완료일',
   shipping_start_date: '배송시작일',
   total_payment: '결제금액',
-  units: '수량'
+  units: '수량',
+  coupon_id: '쿠폰 번호',
+  coupon_name: '쿠폰 이름',
+  validation_start_date: '쿠폰 유효 시작일',
+  validation_end_date: '쿠폰 유효 종료일',
+  download_start_date: '쿠폰 다운로드 시작일',
+  download_end_date: '쿠폰 다운로드 종료일',
+  issue_type_id: '발급유형',
+  is_limited: '제한여부',
+  maximum_number: '제한 개수',
+  issue_number: '발급 개수',
+  used_number: '사용 개수',
+  actions: 'Actions'
 };
 
 export default {

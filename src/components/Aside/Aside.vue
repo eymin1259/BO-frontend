@@ -197,6 +197,11 @@ aside {
             content: '\e005';
           }
         }
+        .promotion {
+          &:before {
+            content: '\e02f';
+          }
+        }
 
         .name {
           font-size: 14px;

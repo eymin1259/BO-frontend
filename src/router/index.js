@@ -8,6 +8,7 @@ import Lookup from '../pages/Lookup';
 import Login from '../pages/Login';
 import Join from '../pages/Join.vue';
 import Signup from '../pages/Signup.vue';
+import PromotionLookup from '../pages/PromotionLookup'
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ export const router = new VueRouter({
       path: '/account/seller/modify',
       name: 'SellerModify',
       component: SellerModify
+    },
+    {
+      path: '/promotion/:type',
+      name: 'PromotionLookup',
+      component: PromotionLookup
     },
     {
       path: '/account/:type',
