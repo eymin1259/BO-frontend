@@ -223,7 +223,7 @@ export const REVIEW = [
     values: REVIEW_DATE.values,
     default: 7
   },
-  { type: 8, title: '정렬필터', key: '', values: REVIEW_SORT }
+  { type: 8, title: '정렬필터', key: 'InquiryType', values: REVIEW_SORT }
 ];
 export default {
   PAYMENT_COMP,

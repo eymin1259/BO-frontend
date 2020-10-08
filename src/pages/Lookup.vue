@@ -1,12 +1,13 @@
 <template>
   <div>
+    <PageLoading v-if="!done" />
     <h3 class="page-title">
       {{ main }}
       <small>{{ sub }}</small>
     </h3>
     <FilterBox :filters="filters" :orderStatus="orderStatus" />
-    <BreadCrumb />
-    <Table :table="table" />
+    <BreadCrumb :orderStatus="orderStatus" />
+    <Table :table="table" :orderStatus="orderStatus" />
   </div>
 </template>
 
@@ -15,14 +16,29 @@ import path from '@/assets/textMap';
 import FilterBox from '@/components/Main/FilterBox';
 import BreadCrumb from '@/components/Main/BreadCrumb';
 import Table from '@/components/Main/Table/Table';
+import PageLoading from '@/components/Loading/PageLoading';
+import { mapState, mapActions } from 'vuex';
+import NAMESPACE from '@/store/modules/types';
 
 export default {
   components: {
     FilterBox,
     BreadCrumb,
-    Table
+    Table,
+    PageLoading
+  },
+  computed: {
+    ...mapState({
+      getNamespace(state, getters) {
+        return getters[NAMESPACE[this.namespace] + `/getNamespace`];
+      }
+    }),
+    currMain() {
+      return this.getNamespace;
+    }
   },
   data() {
+    console.log(this.$route);
     const { main, sub, filters, sort, table, orderStatus } = path[
       this.$route.params.subMenu
     ];
@@ -32,10 +48,32 @@ export default {
       filters,
       sort,
       table,
-      orderStatus: orderStatus ? orderStatus : 0
+      orderStatus: orderStatus ? orderStatus : 0,
+      namespace: this.$route.params.subMenu,
+      done: true
     };
   },
-  methods: {}
+  methods: {
+    ...mapActions({
+      reset(dispatch) {
+        return dispatch(NAMESPACE[this.namespace] + '/reset');
+      },
+      setCurMain(dispatch, payload) {
+        return dispatch(NAMESPACE[this.namespace] + '/setNamespace', payload);
+      }
+    })
+  },
+  mounted() {
+    if (this.currMain !== this.$route.params.subMenu) {
+      this.reset();
+      this.done = false;
+
+      setTimeout(() => {
+        this.setCurMain(this.$route.params.subMenu);
+        this.done = true;
+      }, 800);
+    }
+  }
 };
 </script>
 

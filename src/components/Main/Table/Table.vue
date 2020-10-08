@@ -23,7 +23,7 @@
     </div>
     <div class="inquiry">
       전체 조회건 수:
-      <b>{{ inquiry }}</b>
+      <b>{{ totalNumber }}</b>
       건
     </div>
     <div class="table-container">
@@ -39,13 +39,13 @@
                 ></label>
               </div>
             </th>
-            <th :key="header" v-for="header of table.table_headers">
+            <th :key="header" v-for="header of tableHeaders">
               {{ orderMap[header] }}
             </th>
           </tr>
         </thead>
-        <tbody>
-          <tr :key="item" v-for="item of result">
+        <tbody v-if="result.length > 0">
+          <tr :key="item.order_detail_id" v-for="item of result">
             <td>
               <div class="check-header">
                 <input type="checkbox" class="allCheck" />
@@ -55,15 +55,26 @@
                 ></label>
               </div>
             </td>
-            <td :key="value" v-for="value of Object.values(item)">
-              {{ value }}
+            <td :key="header" v-for="header of tableHeaders">
+              {{ item[header] }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td :colspan="length + 1">
+              검색 결과가 없습니다.
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td :colspan="length + 1">
-              <Pagination :page="page" :lastPage="lastPage" />
+              <Pagination
+                :page="page"
+                :lastPage="lastPage"
+                :orderStatus="orderStatus"
+              />
             </td>
           </tr>
         </tfoot>
@@ -90,31 +101,60 @@
         </button>
       </div>
     </div>
+    <TableLoading v-if="isLoading" />
   </div>
 </template>
 
 <script>
 import { orderMap } from '@/assets/textMap';
 import Pagination from '@/components/Main/Pagination/Pagination';
-import { mapGetters } from 'vuex';
-
+import TableLoading from '@/components/Loading/TableLoading';
+import { mapState } from 'vuex';
+import NAMESPACE from '@/store/modules/types';
 export default {
-  components: { Pagination },
-  props: { table: Object },
+  components: { Pagination, TableLoading },
+  props: { table: Object, orderStatus: Number },
   data() {
     return {
       orderMap,
-      inquiry: undefined,
       all: false,
+      tableHeaders: this.table.table_headers,
       length: this.table.table_headers.length,
-      page: 0,
-      lastPage: 0
+      namespace: this.$route.params.subMenu
     };
   },
   computed: {
-    ...mapGetters('orderStore', ['getResult']),
+    ...mapState({
+      getResult(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getResult'];
+      },
+      getIsLoading(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getIsLoading'];
+      },
+      getPage(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getPage'];
+      },
+      getLastPage(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getLastPage'];
+      },
+      getTotalNumber(state, getters) {
+        return getters[NAMESPACE[this.namespace] + '/getTotalNumber'];
+      }
+    }),
     result() {
       return this.getResult;
+    },
+    isLoading() {
+      return this.getIsLoading;
+    },
+    page() {
+      return this.getPage;
+    },
+    lastPage() {
+      return this.getLastPage;
+    },
+    totalNumber() {
+      return this.getTotalNumber;
     }
   },
   methods: {
@@ -127,6 +167,8 @@ export default {
 
 <style lang="scss" scoped>
 .table {
+  position: relative;
+
   .button-block {
     display: flex;
     justify-content: space-between;
@@ -143,14 +185,14 @@ export default {
       cursor: pointer;
 
       &.action {
-        margin-right: 20px;
+        margin-right: 5px;
         color: #fff;
         border: 1px solid #357ebd;
         background-color: #428bca;
       }
 
       &.excel {
-        margin-left: 20px;
+        margin-left: 5px;
         color: #fff;
         background-color: #5cb85c;
         border-color: #4cae4c;
@@ -275,6 +317,20 @@ export default {
 
           &:first-child {
             width: 38px;
+          }
+        }
+      }
+
+      tbody {
+        font-size: 13px;
+
+        tr {
+          &:nth-child(odd) {
+            background: #f9f9f9;
+          }
+
+          &:hover {
+            background: #f5f5f5;
           }
         }
       }

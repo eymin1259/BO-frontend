@@ -3,13 +3,13 @@
     <div class="title-box">{{ title }} :</div>
     <ul class="button-box">
       <li
-        :class="['button', checked === -1 && 'checked']"
+        :class="['button', button === -1 && 'checked']"
         @click="setChecked(-1)"
       >
         전체
       </li>
       <li
-        :class="['button', checked === +key && 'checked']"
+        :class="['button', button === +key && 'checked']"
         :key="key"
         v-for="[key, value] of Object.entries(buttons)"
         @click="setChecked(+key)"
@@ -28,23 +28,22 @@ export default {
   props: { title: String, buttons: Object, filterKey: String, default: Number },
   data() {
     return {
-      checked: this.default,
       namespace: this.$route.params.subMenu
     };
   },
   computed: {
     ...mapState({
-      getValue(state, getters) {
+      getButton(state, getters) {
         return getters[NAMESPACE[this.namespace] + `/get${this.filterKey}`];
       }
     }),
-    value() {
-      return this.getValue;
+    button() {
+      return this.getButton;
     }
   },
   methods: {
     ...mapActions({
-      setValue(dispatch, value) {
+      setButton(dispatch, value) {
         return dispatch(
           NAMESPACE[this.namespace] + `/set${this.filterKey}`,
           value
@@ -52,8 +51,7 @@ export default {
       }
     }),
     setChecked(value) {
-      this.checked = value;
-      this.setValue(value);
+      this.setButton(value);
     }
   }
 };

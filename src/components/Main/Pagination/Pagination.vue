@@ -4,10 +4,12 @@
       :class="[
         isNaN(button) ? 'page-ellipsis' : 'page-button',
         index === 0 && 'begin',
-        index === pageText.length - 1 && 'last'
+        index === pageText.length - 1 && 'last',
+        page === button && 'current'
       ]"
       :key="button"
       v-for="(button, index) of pageText"
+      @click="searchByPage({ status: orderStatus, page: button })"
     >
       {{ button }}
     </div>
@@ -15,8 +17,16 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import NAMESPACE from '@/store/modules/types';
+
 export default {
-  props: { page: Number, lastPage: Number },
+  props: { page: Number, lastPage: Number, orderStatus: Number },
+  data() {
+    return {
+      namespace: this.$route.params.subMenu
+    };
+  },
   computed: {
     pageText() {
       if (this.lastPage <= 5) {
@@ -54,13 +64,22 @@ export default {
         this.lastPage
       ];
     }
+  },
+  methods: {
+    ...mapActions({
+      searchByPage(dispatch, payload) {
+        console.log(payload);
+        return dispatch(NAMESPACE[this.namespace] + '/searchByPage', payload);
+      }
+    })
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .pagination {
   display: flex;
+  justify-content: center;
   margin: 10px 0;
 
   .page-button {
@@ -88,6 +107,12 @@ export default {
     &.last {
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
+    }
+
+    &.current {
+      background: #bebebe;
+      color: black;
+      cursor: default;
     }
   }
 

@@ -1,13 +1,12 @@
 <template>
   <div class="select">
-    <div v-if="title" class="title-box">{{ title }} :</div>
     <div v-if="options" class="select-box">
-      <select @change="setSearch">
+      <select @change="search">
         <option
           :key="key"
           v-for="[key, title] of Object.entries(options)"
           :value="key"
-          :selected="value === +key"
+          :selected="sort === +key"
           >{{ title }}
         </option>
       </select>
@@ -22,8 +21,7 @@ import NAMESPACE from '@/store/modules/types';
 export default {
   props: {
     options: Object,
-    title: { type: [String, null], required: false },
-    filterKey: String
+    orderStatus: Number
   },
   data() {
     return {
@@ -32,25 +30,24 @@ export default {
   },
   computed: {
     ...mapState({
-      getValue(state, getters) {
-        return getters[NAMESPACE[this.namespace] + `/get${this.filterKey}`];
+      getFilterOrder(state, getters) {
+        return getters[NAMESPACE[this.namespace] + `/getFilterOrder`];
       }
     }),
-    value() {
-      return this.getValue;
+    sort() {
+      return this.getFilterOrder;
     }
   },
   methods: {
     ...mapActions({
-      setValue(dispatch, value) {
-        return dispatch(
-          NAMESPACE[this.namespace] + `/set${this.filterKey}`,
-          value
-        );
+      searchByOrder(dispatch, payload) {
+        console.log(payload);
+        return dispatch(NAMESPACE[this.namespace] + `/searchByOrder`, payload);
       }
     }),
-    setSearch(e) {
-      this.setValue(e.target.value);
+    search(e) {
+      console.log(e.target.value);
+      this.searchByOrder({ status: this.orderStatus, order: e.target.value });
     }
   }
 };
@@ -63,13 +60,6 @@ export default {
   align-items: center;
   padding: 0 15px;
   margin: 10px 0;
-
-  .title-box {
-    width: 125px;
-    height: 30px;
-    padding: 7px 0 0 10px;
-    font-size: 14px;
-  }
 
   .select-box {
     padding-right: 5px;
