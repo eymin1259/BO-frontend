@@ -25,7 +25,7 @@ export const ORDER_MAP = {
   validation_end_date: '쿠폰 유효 종료일',
   download_start_date: '쿠폰 다운로드 시작일',
   download_end_date: '쿠폰 다운로드 종료일',
-  issue_type_id: '발급유형',
+  issue_type_name: '발급유형',
   is_limited: '제한여부',
   maximum_number: '제한 개수',
   issue_number: '발급 개수',

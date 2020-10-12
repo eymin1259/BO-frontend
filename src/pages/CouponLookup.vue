@@ -5,29 +5,29 @@
       <small>{{ sub }}</small>
     </h3>
     <BreadCrumb />
-    <TableWithSearch :table="table" />
+    <CouponTable :table="table" />
   </div>
 </template>
 
 <script>
 import path from '@/assets/textMap';
 import BreadCrumb from '@/components/Main/BreadCrumb';
-import TableWithSearch from '@/components/Main/Table/TableWithSearch';
+import CouponTable from '@/components/Main/Table/CouponTable';
 
 export default {
   components: {
     BreadCrumb,
-    TableWithSearch
+    CouponTable
   },
   data() {
-    const { main, sub, table } = path[this.$route.params.type];
+    // state
+    const { main, sub, table } = path[this.$route.params.subMenu];
     return {
       main,
       sub,
       table
     };
-  },
-  methods: {}
+  }
 };
 </script>
 

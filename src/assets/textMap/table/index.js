@@ -159,7 +159,7 @@ export const COUPON_TB = {
     'validation_end_date',
     'download_start_date',
     'download_end_date',
-    'issue_type_id',
+    'issue_type_name',
     'is_limited',
     'maximum_number',
     'issue_number',
