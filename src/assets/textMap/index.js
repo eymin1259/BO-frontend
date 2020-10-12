@@ -25,7 +25,8 @@ import {
   DELIVERY_COMP_TB,
   REFUND_REQ_TB,
   REFUND_COMP_TB,
-  ORDER_CANCEL_TB
+  ORDER_CANCEL_TB,
+  COUPON_TB
 } from './table';
 import { SHORT_LIMIT, LONG_LIMIT } from './limit';
 import { ORDER_MAP } from './table/tableMap';
@@ -115,5 +116,14 @@ export default {
     filters: REVIEW,
     table: ORDER_CANCEL_TB,
     limit: LONG_LIMIT
+  },
+  coupon: {
+    main: '기획전/쿠폰 관리',
+    sub: '쿠폰 관리',
+    table: COUPON_TB
+  },
+  event: {
+    main: '기획전/쿠폰 관리',
+    sub: '기획전 관리'
   }
 };

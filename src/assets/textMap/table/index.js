@@ -149,3 +149,21 @@ export const ORDER_CANCEL_TB = {
     'refund_amount'
   ]
 };
+export const COUPON_TB = {
+  status_buttons: [{ name: '쿠폰 등록 +', url: '' }],
+  table_headers: [
+    'coupon_id',
+    'coupon_name',
+    'discount_price',
+    'validation_start_date',
+    'validation_end_date',
+    'download_start_date',
+    'download_end_date',
+    'issue_type_name',
+    'is_limited',
+    'maximum_number',
+    'issue_number',
+    'used_number',
+    'actions'
+  ]
+};
